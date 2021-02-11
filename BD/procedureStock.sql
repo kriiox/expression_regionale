@@ -41,3 +41,33 @@ CREATE PROCEDURE updateExpressionParId(p_id INT, p_mots varchar(255), p_numRegio
     SET mots = p_mots, num_Groupe = p_numGroupe, num_Region = p_numRegion 
     WHERE id_expression = p_id;
 
+DROP PROCEDURE IF EXISTS selectRegions; -- Supprime si elle existe déjà
+CREATE PROCEDURE selectRegions()
+    SELECT id_Region, nom
+    FROM region 
+    ORDER BY nom;
+
+DROP PROCEDURE IF EXISTS selectGroupeExpression; -- Supprime si elle existe déjà
+CREATE PROCEDURE selectGroupeExpression()
+    SELECT * 
+    FROM expression 
+    ORDER BY num_Groupe;
+
+DROP PROCEDURE IF EXISTS selectExpressionParGroup; -- Supprime si elle existe déjà
+CREATE PROCEDURE selectExpressionParGroup(p_numGroupe INT)
+    SELECT id_Expression, mots, num_Groupe, num_Region 
+    FROM expression 
+    WHERE num_Groupe = p_numGroupe;
+
+DROP PROCEDURE IF EXISTS selectExpressionParGroupEtRegion; -- Supprime si elle existe déjà
+CREATE PROCEDURE selectExpressionParGroupEtRegion(p_numGroupe INT,p_numRegion INT)
+    SELECT id_Expression, mots, num_Groupe, num_Region 
+    FROM expression 
+    WHERE num_Groupe = p_numGroupe && num_Region = p_numRegion;
+    
+DROP PROCEDURE IF EXISTS selectGroupe; -- Supprime si elle existe déjà
+CREATE PROCEDURE selectGroupe()
+    SELECT *
+    FROM groupe 
+    ORDER BY mots_Ref;
+
