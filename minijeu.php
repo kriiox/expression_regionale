@@ -1,8 +1,10 @@
-<?php include 'header.php' ?>
+<?php include 'header.php'
+
+?>
 
     <div class="container">
     <div class="text-center">
-        <p class="display-3">Le mini-jeu des expressions (youhou)</p>
+        <p class="display-3">Le mini-jeu des expressions</p>
     </div>
     <div class="row mt-5 justify-content-md-center">    
         <!-- Mot aléatoire -->
