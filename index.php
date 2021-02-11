@@ -4,7 +4,7 @@
     <div class="col-lg-12 text-center mt-5">
         <h1>Rechercher une expression régionale</h1>
     </div>
-    <!-- Bar de recherche -->
+    <!-- Barre de recherche -->
     <div class="col-md-4 offset-md-4 mt-5 border border-success pt-3">
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Search ......" aria-label="Recipient's username">

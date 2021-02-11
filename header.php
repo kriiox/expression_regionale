@@ -20,7 +20,7 @@
             <div class="collapse navbar-collapse" id="navbars">
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Accueil</a>
+                    <a class="nav-link" href="index.php">Accueil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Ajouter</a>
@@ -31,6 +31,9 @@
                     <a class="dropdown-item" href="#">Another action</a>
                     <a class="dropdown-item" href="#">Something else here</a>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="minijeu.php   ">Mini jeu</a>
                 </li>
                 </ul>
             </div>
