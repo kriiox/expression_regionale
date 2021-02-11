@@ -14,7 +14,7 @@
   </head>
     <body>
         <nav class="navbar navbar-expand navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">Expression régionale</a>
+            <a class="navbar-brand" href="index.php">Expression régionale</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars" aria-controls="navbars" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
