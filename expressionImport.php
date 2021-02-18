@@ -1,11 +1,12 @@
 <?php 
 include "connexion.php";
+include "API.php";
 
 if($_GET["region"] && $_GET["groupe"]){
     $region=$_GET["region"];
     $groupe = $_GET["groupe"];
-    $result = $bdd->query("CALL selectExpressionParGroupEtRegion($groupe,$region)");
-    $num_of_rows = $result->rowCount() ;
+    $result = SelectExpressionParGroupRegion($groupe,$region,$bdd);
+    $num_of_rows = $result->rowCount();
     if($num_of_rows != 0){
         $row = $result->fetch();
         echo"Voici l'expression associée : ".$row['mots'];

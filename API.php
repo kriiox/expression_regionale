@@ -5,27 +5,27 @@ function AjoutExpression($mot,$num_groupe,$num_region,$bdd){
 
 function ListeExpressionGroupeRegion($num_groupe,$num_region,$bdd){
     $reponseQuery = $bdd->query("call listeExpressionGroupeRegion(".$num_groupe.",".$num_region.")");
-    return $reponseQuery->fetch();
+    return $reponseQuery;
 }
 
 function SelectExpressionParGroupRegion($num_groupe,$num_region,$bdd){
     $reponseQuery = $bdd->query("call selectExpressionParGroupEtRegion(".$num_groupe.",".$num_region.")");
-    return $reponseQuery->fetch();
+    return $reponseQuery;
 }
 
 function SelectExpressionParGroup($num_groupe,$bdd){
     $reponseQuery = $bdd->query("call selectExpressionParGroup(".$num_groupe.")");
-    return $reponseQuery->fetch();
+    return $reponseQuery;
 }
 
 function SelectExpressionParId($id,$bdd){
     $reponseQuery = $bdd->query("call selectExpressionParId(".$id.")");
-    return $reponseQuery->fetch();
+    return $reponseQuery;
 }
 
 function SelectGroupeExpression($mot,$num_groupe,$num_region,$bdd){
     $reponseQuery = $bdd->query("call selectGroupeExpression()");
-    return $reponseQuery->fetch();
+    return $reponseQuery;
 }
 
 function SelectRegions($bdd){
