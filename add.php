@@ -4,7 +4,7 @@ if(isset($_GET["groupe"]) && isset($_GET["expression"]) && isset($_GET["region"]
         $expression = $_GET["expression"];
         $groupe = $_GET["groupe"];
         $region = $_GET["region"];
-        $bdd->query("CALL ajoutExpression('".$expression."',".$groupe.",".$region.")");
+        ajoutExpression($expression,$groupe,$region,$bdd);
     }
 ?>
     <div class="container">
@@ -16,7 +16,7 @@ if(isset($_GET["groupe"]) && isset($_GET["expression"]) && isset($_GET["region"]
             <select name="selectorRegion" id="selectorRegion" onchange="afficherSelectGroupe()">
             <option disabled selected> ---- Selectionnez une region ---- </option>
                 <?php
-                    $regions = $bdd->query("CALL selectRegions()");
+                    $regions = SelectRegions($bdd);
                     while ($donnees = $regions->fetch())
                     {
                 ?>
@@ -30,7 +30,7 @@ if(isset($_GET["groupe"]) && isset($_GET["expression"]) && isset($_GET["region"]
             <label for="selectorGroupe" id="labelSelectorGroupe" style="display : none" >Entrez le groupe de l'expression :</label>
             <select name="selectorGroupe" id="selectorGroupe" style="display : none" onchange="afficherExpression()">
                 <?php
-                $groupes = $bdd->query("CALL selectGroupe()");
+                $groupes = SelectGroupe($bdd);
                 while ($donnees = $groupes->fetch())
                     {
                 ?>
