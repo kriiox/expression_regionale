@@ -1,4 +1,8 @@
-<?php include 'connexion.php' ?>
+<?php 
+include 'connexion.php';
+include 'API.php';
+?>
+
 
 <!doctype html>
 <html lang="fr">
