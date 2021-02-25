@@ -39,9 +39,18 @@ if(isset($_GET['idExpression'])){
     $expression_affich_nom = $new_expression['mots'];
 }
 
-function verifJeu($regions, $id_prev_expression){
-    foreach($regions as $region){
-        
+function verifJeu($regions, $id_prev_expression, $bdd){
+    // On vérifié d'abord que le nombre de régions qui ont été proposées correspond au nombre de régions à qui l'expression correspond
+    $region_parId = ListeExpressionParIdExpression($id_prev_expression, $bdd);
+    $nb_regionParId = count($region_parId);
+    // Si ce n'est pas le cas, pas besoin de faire la vérif
+    if($nb_regionParId == $regions){
+        foreach($regions as $region){
+            // Ici il faut vérifier que les régions qui ont été cochées correspond aux régions de la bdd
+            
+        }
+    } else {
+        // défaite
     }
 }
 

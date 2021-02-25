@@ -8,6 +8,11 @@ function ListeExpressionGroupeRegion($num_groupe,$num_region,$bdd){
     return $reponseQuery;
 }
 
+function ListeExpressionParIdExpression($num_expression,$bdd){
+    $reponseQuery = $bdd->query("call listeExpressionParIdExpression(".$num_expression.")");
+    return $reponseQuery;
+}
+
 function SelectExpressionParGroupRegion($num_groupe,$num_region,$bdd){
     $reponseQuery = $bdd->query("call selectExpressionParGroupEtRegion(".$num_groupe.",".$num_region.")");
     return $reponseQuery;
