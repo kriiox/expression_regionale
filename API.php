@@ -41,4 +41,9 @@ function SelectGroupe($bdd){
 function UpdateExpressionParId($id,$mot,$num_groupe,$num_region,$bdd){
     $reponseQuery = $bdd->query("call updateExpressionParId(".$id.",'".$mot."',".$num_groupe.",".$num_region.")");
 }
+
+function maxExpression($bdd){
+    $maxExpression = $bdd->query("SELECT MAX(id_Expression) FROM expression");
+    return $maxExpression;
+}
 ?>
