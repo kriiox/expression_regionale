@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 25 fév. 2021 à 19:17
--- Version du serveur :  5.7.31
--- Version de PHP : 7.3.21
+-- Hôte : 127.0.0.1:3308
+-- Généré le :  jeu. 25 fév. 2021 à 20:05
+-- Version du serveur :  5.7.24
+-- Version de PHP :  7.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -22,6 +23,11 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `bdd_expression` DEFAULT CHARACTER SET latin1 COLLATE latin1_bin;
 USE `bdd_expression`;
+
+DROP TABLE IF EXISTS `expression`;
+DROP TABLE IF EXISTS `groupe`;
+DROP TABLE IF EXISTS `region`;
+DROP TABLE IF EXISTS `region_expression`;
 
 DELIMITER $$
 --
@@ -80,6 +86,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `selectRegions` ()  SELECT id_Region
     FROM region 
     ORDER BY nom$$
 
+DROP PROCEDURE IF EXISTS `updateExpressionParId`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateExpressionParId` (`p_id` INT, `p_mots` VARCHAR(255), `p_numRegion` INT, `p_numGroupe` INT)  UPDATE expression 
+    SET mots = p_mots, num_Groupe = p_numGroupe, num_Region = p_numRegion 
+    WHERE id_Expression = p_id$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -88,14 +99,14 @@ DELIMITER ;
 -- Structure de la table `expression`
 --
 
-DROP TABLE IF EXISTS `expression`;
+
 CREATE TABLE IF NOT EXISTS `expression` (
   `id_Expression` int(11) NOT NULL AUTO_INCREMENT,
   `mots` varchar(255) COLLATE latin1_bin NOT NULL,
   `num_Groupe` int(11) NOT NULL,
   PRIMARY KEY (`id_Expression`),
   KEY `fk_numGroup_Groupe_idGroup` (`num_Groupe`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Déchargement des données de la table `expression`
@@ -103,21 +114,35 @@ CREATE TABLE IF NOT EXISTS `expression` (
 
 INSERT INTO `expression` (`id_Expression`, `mots`, `num_Groupe`) VALUES
 (1, 'Serpillère', 1),
-(2, 'toiles3', 1),
+(2, 'toiles', 1),
 (3, 'Wassingue', 1),
-(4, 'Petit pain au chocolat', 2),
-(5, 'Pain au chocolat', 2),
+(4, 'Piéce', 1),
+(5, 'Petit pain au chocolat', 2),
 (6, 'Pain au chocolat', 2),
-(7, 'Pain au chocolat', 2),
-(8, 'Pain au chocolat', 2),
-(9, 'Pain au chocolat', 2),
-(10, 'Pain au chocolat', 2),
-(11, 'Pain au chocolat', 2),
-(12, 'Chocolatine', 2),
-(13, 'Pain au chocolat', 2),
-(14, 'Chocolatine', 2),
-(15, 'Pain au chocolat', 2),
-(16, 'Pain au chocolat', 2);
+(7, 'Chocolatine', 2),
+(8, 'Crayon de bois', 3),
+(9, 'Crayon à papier', 3),
+(10, 'Crayon gris', 3),
+(11, 'Crayon de papier', 3),
+(12, 'Pelle', 4),
+(13, 'Ramasse-bourrier', 4),
+(14, 'Pelle-à-cheni', 4),
+(15, 'Pain aux raisins', 5),
+(16, 'Escargot', 5),
+(17, 'Kebab', 6),
+(18, 'Grec', 6),
+(19, 'Döner', 6),
+(20, 'Barrer', 7),
+(21, 'Clencher', 7),
+(22, 'Fermer à clef', 7),
+(23, 'Ducasse', 8),
+(24, 'Fête', 8),
+(25, 'Fest-noz', 8),
+(26, 'Frairie', 8),
+(27, 'Vogue', 8),
+(28, 'Fête votive', 8),
+(29, 'Galette des rois', 9),
+(30, 'Gâteau des rois', 9);
 
 -- --------------------------------------------------------
 
@@ -125,7 +150,7 @@ INSERT INTO `expression` (`id_Expression`, `mots`, `num_Groupe`) VALUES
 -- Structure de la table `groupe`
 --
 
-DROP TABLE IF EXISTS `groupe`;
+
 CREATE TABLE IF NOT EXISTS `groupe` (
   `id_Groupe` int(11) NOT NULL AUTO_INCREMENT,
   `mots_Ref` varchar(255) COLLATE latin1_bin NOT NULL,
@@ -153,7 +178,7 @@ INSERT INTO `groupe` (`id_Groupe`, `mots_Ref`) VALUES
 -- Structure de la table `region`
 --
 
-DROP TABLE IF EXISTS `region`;
+
 CREATE TABLE IF NOT EXISTS `region` (
   `id_Region` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) COLLATE latin1_bin NOT NULL,
@@ -185,7 +210,7 @@ INSERT INTO `region` (`id_Region`, `nom`) VALUES
 -- Structure de la table `region_expression`
 --
 
-DROP TABLE IF EXISTS `region_expression`;
+
 CREATE TABLE IF NOT EXISTS `region_expression` (
   `num_Region` int(11) NOT NULL,
   `num_Expression` int(11) NOT NULL,
@@ -199,7 +224,122 @@ CREATE TABLE IF NOT EXISTS `region_expression` (
 
 INSERT INTO `region_expression` (`num_Region`, `num_Expression`) VALUES
 (1, 1),
-(1, 2);
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1),
+(11, 1),
+(13, 1),
+(2, 2),
+(12, 4),
+(1, 5),
+(2, 6),
+(3, 6),
+(4, 6),
+(5, 6),
+(6, 6),
+(7, 6),
+(8, 6),
+(10, 6),
+(12, 6),
+(13, 6),
+(9, 7),
+(11, 7),
+(1, 8),
+(4, 8),
+(2, 9),
+(9, 9),
+(10, 9),
+(11, 9),
+(13, 9),
+(3, 10),
+(12, 10),
+(5, 11),
+(6, 11),
+(7, 11),
+(8, 11),
+(1, 12),
+(2, 12),
+(3, 12),
+(5, 12),
+(6, 12),
+(7, 12),
+(9, 12),
+(10, 12),
+(11, 12),
+(12, 12),
+(13, 12),
+(4, 13),
+(8, 14),
+(1, 15),
+(2, 15),
+(3, 15),
+(4, 15),
+(5, 15),
+(6, 15),
+(8, 15),
+(9, 15),
+(10, 15),
+(11, 15),
+(12, 15),
+(13, 15),
+(7, 16),
+(1, 17),
+(2, 17),
+(3, 17),
+(4, 17),
+(5, 17),
+(8, 17),
+(9, 17),
+(10, 17),
+(11, 17),
+(12, 17),
+(13, 17),
+(6, 18),
+(7, 19),
+(1, 20),
+(4, 20),
+(2, 21),
+(7, 21),
+(3, 22),
+(5, 22),
+(6, 22),
+(8, 22),
+(9, 22),
+(10, 22),
+(11, 22),
+(12, 22),
+(13, 22),
+(1, 23),
+(2, 24),
+(4, 24),
+(5, 24),
+(6, 24),
+(7, 24),
+(8, 24),
+(13, 24),
+(3, 25),
+(9, 26),
+(10, 27),
+(11, 28),
+(12, 28),
+(1, 29),
+(2, 29),
+(3, 29),
+(4, 29),
+(5, 29),
+(6, 29),
+(7, 29),
+(8, 29),
+(10, 29),
+(9, 30),
+(11, 30),
+(12, 30),
+(13, 30);
 
 --
 -- Contraintes pour les tables déchargées
