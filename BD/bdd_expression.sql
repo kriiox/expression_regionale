@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3308
--- Généré le :  jeu. 25 fév. 2021 à 20:05
--- Version du serveur :  5.7.24
--- Version de PHP :  7.3.1
+-- Hôte : 127.0.0.1
+-- Généré le : ven. 26 fév. 2021 à 05:23
+-- Version du serveur :  10.4.17-MariaDB
+-- Version de PHP : 8.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -21,19 +20,11 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `bdd_expression`
 --
-CREATE DATABASE IF NOT EXISTS `bdd_expression` DEFAULT CHARACTER SET latin1 COLLATE latin1_bin;
-USE `bdd_expression`;
-
-DROP TABLE IF EXISTS `expression`;
-DROP TABLE IF EXISTS `groupe`;
-DROP TABLE IF EXISTS `region`;
-DROP TABLE IF EXISTS `region_expression`;
 
 DELIMITER $$
 --
 -- Procédures
 --
-DROP PROCEDURE IF EXISTS `ajoutExpression`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ajoutExpression` (`p_mot` VARCHAR(255), `p_numGroupe` INT, `p_numRegion` INT)  BEGIN
     DECLARE id INT;
     INSERT INTO expression (mots, num_Groupe) 
@@ -43,50 +34,50 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ajoutExpression` (`p_mot` VARCHAR(2
     Values (p_numRegion, id);
 END$$
 
-DROP PROCEDURE IF EXISTS `listeExpressionGroupeRegion`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listeExpressionGroupeRegion` (`p_numGroupe` INT, `p_numRegion` INT)  SELECT id_expression, mots, num_Groupe, num_Region 
     FROM expression AS e INNER JOIN region_expression AS re ON e.id_Expression = re.num_Expression
     WHERE num_Groupe = p_numGroupe && num_Region = p_numRegion$$
 
-DROP PROCEDURE IF EXISTS `listeRegionParIdExpression`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listeRegionParIdExpression` (`p_numExpression` INT)  SELECT num_Region
 	FROM region_expression
 	Where num_Expression = p_numExpression$$
 
-DROP PROCEDURE IF EXISTS `selectExpressionParGroup`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectExpressionParGroup` (`p_numGroupe` INT)  SELECT id_Expression, mots, num_Groupe, num_Region 
     FROM expression INNER JOIN region_expression ON id_Expression = num_Expression
     WHERE num_Groupe = p_numGroupe$$
 
-DROP PROCEDURE IF EXISTS `selectExpressionParGroupEtRegion`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectExpressionParGroupEtRegion` (`p_numGroupe` INT, `p_numRegion` INT)  SELECT id_Expression, mots, num_Groupe, num_Region 
     FROM expression INNER JOIN region_expression ON id_Expression = num_Expression
     WHERE num_Groupe = p_numGroupe && num_Region = p_numRegion$$
 
-DROP PROCEDURE IF EXISTS `selectExpressionParId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectExpressionParId` (`p_id` INT)  SELECT id_expression, mots, num_Groupe, num_Region 
     FROM expression INNER JOIN region_expression ON id_Expression = num_Expression
     WHERE id_expression = p_id$$
 
-DROP PROCEDURE IF EXISTS `selectExpressionsByExpression`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectExpressionsByExpression` (`p_mot` VARCHAR(255))  SELECT mots FROM expression WHERE num_Groupe = ( SELECT num_Groupe FROM expression WHERE mots = p_mot LIMIT 1)$$
 
-DROP PROCEDURE IF EXISTS `selectGroupe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `selectExpressionsWithGroupe` (IN `p_numGroupe` INT)  SELECT mots from expression where num_Groupe = p_numGroupe && id_Expression 
+    IN (SELECT num_Expression FROM region_expression)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectGroupe` ()  SELECT *
     FROM groupe 
     ORDER BY mots_Ref$$
 
-DROP PROCEDURE IF EXISTS `selectGroupeExpression`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectGroupeExpression` ()  SELECT id_expression, mots, num_Groupe, num_Region
     FROM expression INNER JOIN region_expression ON id_Expression = num_Expression
     ORDER BY num_Groupe$$
 
-DROP PROCEDURE IF EXISTS `selectRegions`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `selectGroupeWithExpression` (IN `p_mot` VARCHAR(255))  SELECT num_Groupe from expression where mots = p_mot$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectRegions` ()  SELECT id_Region, nom
     FROM region 
     ORDER BY nom$$
 
-DROP PROCEDURE IF EXISTS `updateExpressionParId`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `selectRegionsByExpression` (IN `p_mot` VARCHAR(255))  SELECT region_expression.num_Region
+    FROM region_expression 
+    INNER JOIN expression ON region_expression.num_Expression=expression.id_Expression
+    WHERE expression.mots = p_mot$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `updateExpressionParId` (`p_id` INT, `p_mots` VARCHAR(255), `p_numRegion` INT, `p_numGroupe` INT)  UPDATE expression 
     SET mots = p_mots, num_Groupe = p_numGroupe, num_Region = p_numRegion 
     WHERE id_Expression = p_id$$
@@ -99,14 +90,11 @@ DELIMITER ;
 -- Structure de la table `expression`
 --
 
-
-CREATE TABLE IF NOT EXISTS `expression` (
-  `id_Expression` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `expression` (
+  `id_Expression` int(11) NOT NULL,
   `mots` varchar(255) COLLATE latin1_bin NOT NULL,
-  `num_Groupe` int(11) NOT NULL,
-  PRIMARY KEY (`id_Expression`),
-  KEY `fk_numGroup_Groupe_idGroup` (`num_Groupe`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+  `num_Groupe` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Déchargement des données de la table `expression`
@@ -150,12 +138,10 @@ INSERT INTO `expression` (`id_Expression`, `mots`, `num_Groupe`) VALUES
 -- Structure de la table `groupe`
 --
 
-
-CREATE TABLE IF NOT EXISTS `groupe` (
-  `id_Groupe` int(11) NOT NULL AUTO_INCREMENT,
-  `mots_Ref` varchar(255) COLLATE latin1_bin NOT NULL,
-  PRIMARY KEY (`id_Groupe`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+CREATE TABLE `groupe` (
+  `id_Groupe` int(11) NOT NULL,
+  `mots_Ref` varchar(255) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Déchargement des données de la table `groupe`
@@ -178,12 +164,10 @@ INSERT INTO `groupe` (`id_Groupe`, `mots_Ref`) VALUES
 -- Structure de la table `region`
 --
 
-
-CREATE TABLE IF NOT EXISTS `region` (
-  `id_Region` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) COLLATE latin1_bin NOT NULL,
-  PRIMARY KEY (`id_Region`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+CREATE TABLE `region` (
+  `id_Region` int(11) NOT NULL,
+  `nom` varchar(255) COLLATE latin1_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Déchargement des données de la table `region`
@@ -210,12 +194,9 @@ INSERT INTO `region` (`id_Region`, `nom`) VALUES
 -- Structure de la table `region_expression`
 --
 
-
-CREATE TABLE IF NOT EXISTS `region_expression` (
+CREATE TABLE `region_expression` (
   `num_Region` int(11) NOT NULL,
-  `num_Expression` int(11) NOT NULL,
-  PRIMARY KEY (`num_Region`,`num_Expression`),
-  KEY `FK_numExpression_Expression_idExpression` (`num_Expression`)
+  `num_Expression` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
@@ -224,122 +205,174 @@ CREATE TABLE IF NOT EXISTS `region_expression` (
 
 INSERT INTO `region_expression` (`num_Region`, `num_Expression`) VALUES
 (1, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(9, 1),
-(10, 1),
-(11, 1),
-(13, 1),
-(2, 2),
-(12, 4),
 (1, 5),
-(2, 6),
-(3, 6),
-(4, 6),
-(5, 6),
-(6, 6),
-(7, 6),
-(8, 6),
-(10, 6),
-(12, 6),
-(13, 6),
-(9, 7),
-(11, 7),
 (1, 8),
-(4, 8),
-(2, 9),
-(9, 9),
-(10, 9),
-(11, 9),
-(13, 9),
-(3, 10),
-(12, 10),
-(5, 11),
-(6, 11),
-(7, 11),
-(8, 11),
 (1, 12),
-(2, 12),
-(3, 12),
-(5, 12),
-(6, 12),
-(7, 12),
-(9, 12),
-(10, 12),
-(11, 12),
-(12, 12),
-(13, 12),
-(4, 13),
-(8, 14),
 (1, 15),
-(2, 15),
-(3, 15),
-(4, 15),
-(5, 15),
-(6, 15),
-(8, 15),
-(9, 15),
-(10, 15),
-(11, 15),
-(12, 15),
-(13, 15),
-(7, 16),
 (1, 17),
-(2, 17),
-(3, 17),
-(4, 17),
-(5, 17),
-(8, 17),
-(9, 17),
-(10, 17),
-(11, 17),
-(12, 17),
-(13, 17),
-(6, 18),
-(7, 19),
 (1, 20),
-(4, 20),
-(2, 21),
-(7, 21),
-(3, 22),
-(5, 22),
-(6, 22),
-(8, 22),
-(9, 22),
-(10, 22),
-(11, 22),
-(12, 22),
-(13, 22),
 (1, 23),
-(2, 24),
-(4, 24),
-(5, 24),
-(6, 24),
-(7, 24),
-(8, 24),
-(13, 24),
-(3, 25),
-(9, 26),
-(10, 27),
-(11, 28),
-(12, 28),
 (1, 29),
+(2, 2),
+(2, 6),
+(2, 9),
+(2, 12),
+(2, 15),
+(2, 17),
+(2, 21),
+(2, 24),
 (2, 29),
+(3, 1),
+(3, 6),
+(3, 10),
+(3, 12),
+(3, 15),
+(3, 17),
+(3, 22),
+(3, 25),
 (3, 29),
+(4, 1),
+(4, 6),
+(4, 8),
+(4, 13),
+(4, 15),
+(4, 17),
+(4, 20),
+(4, 24),
 (4, 29),
+(5, 1),
+(5, 6),
+(5, 11),
+(5, 12),
+(5, 15),
+(5, 17),
+(5, 22),
+(5, 24),
 (5, 29),
+(6, 1),
+(6, 6),
+(6, 11),
+(6, 12),
+(6, 15),
+(6, 18),
+(6, 22),
+(6, 24),
 (6, 29),
+(7, 1),
+(7, 6),
+(7, 11),
+(7, 12),
+(7, 16),
+(7, 19),
+(7, 21),
+(7, 24),
 (7, 29),
+(8, 1),
+(8, 6),
+(8, 11),
+(8, 14),
+(8, 15),
+(8, 17),
+(8, 22),
+(8, 24),
 (8, 29),
-(10, 29),
+(9, 1),
+(9, 7),
+(9, 9),
+(9, 12),
+(9, 15),
+(9, 17),
+(9, 22),
+(9, 26),
 (9, 30),
+(10, 1),
+(10, 6),
+(10, 9),
+(10, 12),
+(10, 15),
+(10, 17),
+(10, 22),
+(10, 27),
+(10, 29),
+(11, 1),
+(11, 7),
+(11, 9),
+(11, 12),
+(11, 15),
+(11, 17),
+(11, 22),
+(11, 28),
 (11, 30),
+(12, 4),
+(12, 6),
+(12, 10),
+(12, 12),
+(12, 15),
+(12, 17),
+(12, 22),
+(12, 28),
 (12, 30),
+(13, 1),
+(13, 6),
+(13, 9),
+(13, 12),
+(13, 15),
+(13, 17),
+(13, 22),
+(13, 24),
 (13, 30);
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `expression`
+--
+ALTER TABLE `expression`
+  ADD PRIMARY KEY (`id_Expression`),
+  ADD KEY `fk_numGroup_Groupe_idGroup` (`num_Groupe`);
+
+--
+-- Index pour la table `groupe`
+--
+ALTER TABLE `groupe`
+  ADD PRIMARY KEY (`id_Groupe`);
+
+--
+-- Index pour la table `region`
+--
+ALTER TABLE `region`
+  ADD PRIMARY KEY (`id_Region`);
+
+--
+-- Index pour la table `region_expression`
+--
+ALTER TABLE `region_expression`
+  ADD PRIMARY KEY (`num_Region`,`num_Expression`),
+  ADD KEY `FK_numExpression_Expression_idExpression` (`num_Expression`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `expression`
+--
+ALTER TABLE `expression`
+  MODIFY `id_Expression` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT pour la table `groupe`
+--
+ALTER TABLE `groupe`
+  MODIFY `id_Groupe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pour la table `region`
+--
+ALTER TABLE `region`
+  MODIFY `id_Region` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Contraintes pour les tables déchargées

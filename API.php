@@ -13,8 +13,8 @@ function ListeExpressionParIdExpression($num_expression,$bdd){
     return $reponseQuery;
 }
 
-function SelectExpressionParGroupRegion($num_groupe,$num_region,$bdd){
-    $reponseQuery = $bdd->query("call selectExpressionParGroupEtRegion(".$num_groupe.",".$num_region.")");
+function ListeRegionParIdExpression($num_region,$bdd){
+    $reponseQuery = $bdd->query("call listeRegionParIdExpression(".$num_region.")");
     return $reponseQuery;
 }
 
@@ -23,13 +23,38 @@ function SelectExpressionParGroup($num_groupe,$bdd){
     return $reponseQuery;
 }
 
+function SelectExpressionParGroupEtRegion($num_groupe,$num_region,$bdd){
+    $reponseQuery = $bdd->query("call selectExpressionParGroupEtRegion(".$num_groupe.",".$num_region.")");
+    return $reponseQuery;
+}
+
 function SelectExpressionParId($id,$bdd){
     $reponseQuery = $bdd->query("call selectExpressionParId(".$id.")");
     return $reponseQuery;
 }
 
-function SelectGroupeExpression($mot,$num_groupe,$num_region,$bdd){
+function SelectExpressionsByExpression($mot,$bdd){
+    $reponseQuery = $bdd->query("call selectExpressionsByExpression('".$mot."')");
+    return $reponseQuery;
+}
+
+function SelectExpressionsWithGroupe($num_groupe,$bdd){
+    $reponseQuery = $bdd->query("call selectExpressionsWithGroupe(".$num_groupe.")");
+    return $reponseQuery;
+}
+
+function SelectGroupe($bdd){
+    $reponseQuery = $bdd->query("call selectGroupe()");
+    return $reponseQuery;
+}
+
+function SelectGroupeExpression($bdd){
     $reponseQuery = $bdd->query("call selectGroupeExpression()");
+    return $reponseQuery;
+}
+
+function SelectGroupeWithExpression($mot,$bdd){
+    $reponseQuery = $bdd->query("call selectGroupeWithExpression('".$mot."')");
     return $reponseQuery;
 }
 
@@ -38,8 +63,8 @@ function SelectRegions($bdd){
     return $reponseQuery;
 }
 
-function SelectGroupe($bdd){
-    $reponseQuery = $bdd->query("call selectGroupe()");
+function SelectRegionsByExpression($mot,$bdd){
+    $reponseQuery = $bdd->query("call selectRegionsByExpression('".$mot."')");
     return $reponseQuery;
 }
 
